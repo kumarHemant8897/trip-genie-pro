@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthForm from '@/components/AuthForm';
 import TripDashboard from '@/components/TripDashboard';
@@ -9,6 +9,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { generateItinerary, TripFormData } from '@/services/openaiService';
 import { LogOut, ArrowLeft } from 'lucide-react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 type ViewState = 'dashboard' | 'create' | 'view' | 'generating';
 
@@ -19,6 +21,7 @@ const Index = () => {
   const [generatedItinerary, setGeneratedItinerary] = useState<any>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
+  const itineraryContentRef = useRef<HTMLDivElement>(null);
 
   const handleCreateTrip = async (formData: TripFormData) => {
     if (!user) return;
@@ -74,7 +77,7 @@ const Index = () => {
         description: "Your personalized itinerary has been created!",
       });
     } catch (error: any) {
-      console.error("Error creating trip:", error); // Added console log for better debugging
+      console.error("Error creating trip:", error); 
       toast({
         title: "Error",
         description: `Failed to generate itinerary. ${error.message || 'Please try again.'}`,
@@ -105,6 +108,60 @@ const Index = () => {
 
   const handleAuthSuccess = () => {
     // Auth state will be handled by useAuth hook
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!itineraryContentRef.current) {
+      toast({ 
+        title: "Error", 
+        description: "Itinerary content not found for PDF generation.", 
+        variant: "destructive" 
+      });
+      return;
+    }
+    if (!generatedItinerary) {
+       toast({ 
+        title: "Error", 
+        description: "No itinerary data available to generate PDF.", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    toast({ title: "Generating PDF...", description: "Please wait a moment." });
+
+    try {
+      // Temporarily make sure all collapsible content is visible for capture
+      // This might require specific handling if you have accordions/collapsibles
+      const canvas = await html2canvas(itineraryContentRef.current, {
+        scale: 2, // Higher scale for better quality
+        useCORS: true, // If there are external images (e.g., weather icons if they are external)
+        logging: false, // Set to true for debugging html2canvas issues
+        scrollX: 0,
+        scrollY: -window.scrollY, // Adjust for current page scroll to capture top of element
+        windowWidth: itineraryContentRef.current.scrollWidth,
+        windowHeight: itineraryContentRef.current.scrollHeight,
+      });
+      const imgData = canvas.toDataURL('image/png');
+      
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: [canvas.width, canvas.height], // PDF page dimensions based on canvas
+      });
+
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`${generatedItinerary.tripTitle || 'itinerary'}.pdf`);
+      
+      toast({ title: "Success!", description: "PDF downloaded." });
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast({ 
+        title: "PDF Generation Failed", 
+        description: `Could not generate PDF. ${(error as Error).message || 'Unknown error.'}`, 
+        variant: "destructive" 
+      });
+    }
   };
 
   if (loading) {
@@ -179,10 +236,11 @@ const Index = () => {
               </div>
               {generatedItinerary && (
                 <ItineraryDisplay
+                  ref={itineraryContentRef}
                   itinerary={generatedItinerary}
                   onEdit={() => setCurrentView('create')}
                   onShare={() => toast({ title: "Share feature coming soon!" })}
-                  onDownload={() => toast({ title: "PDF download coming soon!" })}
+                  onDownload={handleDownloadPdf}
                 />
               )}
             </div>
