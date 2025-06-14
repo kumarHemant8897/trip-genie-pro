@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom'; // Import Link and useLocation
 import {
   Sidebar,
   SidebarContent,
@@ -11,10 +12,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarTrigger,
+  // SidebarTrigger, // SidebarTrigger is typically used outside the sidebar itself
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { Home, Plane, Compass, Settings, Bell, UserCircle, LogOut } from 'lucide-react'; // Using UserCircle for profile for now
+import { Home, Plane, Compass, Settings, Bell, UserCircle, LogOut } from 'lucide-react';
 
 interface AppSidebarProps {
   onSignOut: () => void;
@@ -22,14 +23,16 @@ interface AppSidebarProps {
 }
 
 const menuItems = [
-  { title: 'Dashboard', icon: Home, href: '#' },
-  { title: 'My Trips', icon: Plane, href: '#' },
-  { title: 'Explore', icon: Compass, href: '#' },
-  { title: 'Notifications', icon: Bell, href: '#' },
-  { title: 'Settings', icon: Settings, href: '#' },
+  { title: 'Dashboard', icon: Home, href: '/' }, // Assuming dashboard is at root
+  { title: 'My Trips', icon: Plane, href: '/' }, // Or a dedicated /trips route if dashboard is different
+  { title: 'Explore', icon: Compass, href: '/explore' }, // Updated href
+  { title: 'Notifications', icon: Bell, href: '#' }, // Placeholder
+  { title: 'Settings', icon: Settings, href: '#' }, // Placeholder
 ];
 
 export const AppSidebar = ({ onSignOut, userEmail }: AppSidebarProps) => {
+  const location = useLocation(); // Get current location
+
   return (
     <Sidebar className="border-r border-gray-200 bg-white shadow-soft-light">
       <SidebarHeader className="p-4 border-b">
@@ -48,12 +51,12 @@ export const AppSidebar = ({ onSignOut, userEmail }: AppSidebarProps) => {
                   <SidebarMenuButton
                     asChild
                     className="hover:bg-sky-blue-DEFAULT/10 hover:text-sky-blue-DEFAULT data-[active=true]:bg-sky-blue-DEFAULT/10 data-[active=true]:text-sky-blue-DEFAULT"
-                    //isActive={item.title === 'Dashboard'} // Example active state
+                    isActive={location.pathname === item.href} // Set active state
                   >
-                    <a href={item.href} className="flex items-center gap-3 rounded-md px-3 py-2.5 text-gray-700">
+                    <Link to={item.href} className="flex items-center gap-3 rounded-md px-3 py-2.5 text-gray-700">
                       <item.icon className="w-5 h-5" />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -79,4 +82,3 @@ export const AppSidebar = ({ onSignOut, userEmail }: AppSidebarProps) => {
     </Sidebar>
   );
 };
-

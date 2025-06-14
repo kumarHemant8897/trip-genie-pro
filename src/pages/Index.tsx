@@ -15,8 +15,7 @@ import html2canvas from 'html2canvas';
 // New imports for sidebar and header components
 import { SidebarProvider, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
-import { UserProfileDropdown } from '@/components/UserProfileDropdown';
-import { NotificationBell } from '@/components/NotificationBell';
+import { PageHeader } from '@/components/PageHeader';
 
 type ViewState = 'dashboard' | 'create' | 'view' | 'generating';
 
@@ -170,32 +169,6 @@ const Index = () => {
     }
   };
 
-  const PageHeader = () => {
-    const { toggleSidebar } = useSidebar();
-    return (
-      <div className="bg-white border-b px-4 sm:px-6 py-3 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-full mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={toggleSidebar} className="md:hidden hover:bg-sky-blue-DEFAULT/10"> {/* Sidebar trigger for mobile */}
-              <Menu className="w-6 h-6 text-gray-600" />
-            </Button>
-             <SidebarTrigger className="hidden md:flex hover:bg-sky-blue-DEFAULT/10" /> {/* Sidebar trigger for desktop */}
-            <div className="flex items-center gap-2 ml-2">
-              <div className="w-8 h-8 bg-sky-blue-DEFAULT rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-xl">✈️</span>
-              </div>
-              <span className="text-xl font-semibold text-primary hidden sm:inline">Smart Travel Planner</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-4">
-            <NotificationBell />
-            <UserProfileDropdown userEmail={user.email} onSignOut={signOut} />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -281,7 +254,7 @@ const Index = () => {
 
       default: // Dashboard view
         return (
-          <SidebarProvider defaultOpen={true}> {/* SidebarProvider wraps dashboard view */}
+          <SidebarProvider defaultOpen={true}>
             <div className="flex min-h-screen w-full bg-gray-50">
               <AppSidebar onSignOut={signOut} userEmail={user.email} />
               <main className="flex-1 flex flex-col overflow-y-auto">
@@ -289,7 +262,7 @@ const Index = () => {
                 <TripDashboard 
                   onCreateNew={() => setCurrentView('create')}
                   onViewTrip={handleViewTrip}
-                  onEditTrip={handleEditTrip} // This could lead to an edit form/view
+                  onEditTrip={handleEditTrip}
                 />
               </main>
             </div>
