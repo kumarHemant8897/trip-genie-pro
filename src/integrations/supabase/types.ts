@@ -9,7 +9,125 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      trip_collaborators: {
+        Row: {
+          created_at: string
+          id: string
+          permission: string
+          trip_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          permission?: string
+          trip_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          permission?: string
+          trip_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trip_collaborators_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trips: {
+        Row: {
+          activity_level: string
+          budget: number | null
+          created_at: string
+          destination: string
+          dietary_preferences: string[] | null
+          end_date: string
+          generated_itinerary: Json | null
+          id: string
+          interests: string[] | null
+          is_public: boolean | null
+          must_visit_places: string[] | null
+          share_token: string | null
+          start_date: string
+          title: string
+          traveler_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activity_level: string
+          budget?: number | null
+          created_at?: string
+          destination: string
+          dietary_preferences?: string[] | null
+          end_date: string
+          generated_itinerary?: Json | null
+          id?: string
+          interests?: string[] | null
+          is_public?: boolean | null
+          must_visit_places?: string[] | null
+          share_token?: string | null
+          start_date: string
+          title: string
+          traveler_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activity_level?: string
+          budget?: number | null
+          created_at?: string
+          destination?: string
+          dietary_preferences?: string[] | null
+          end_date?: string
+          generated_itinerary?: Json | null
+          id?: string
+          interests?: string[] | null
+          is_public?: boolean | null
+          must_visit_places?: string[] | null
+          share_token?: string | null
+          start_date?: string
+          title?: string
+          traveler_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
