@@ -23,9 +23,9 @@ interface AppSidebarProps {
 }
 
 const menuItems = [
-  { title: 'Dashboard', icon: Home, href: '/' }, // Assuming dashboard is at root
-  { title: 'My Trips', icon: Plane, href: '/' }, // Or a dedicated /trips route if dashboard is different
-  { title: 'Explore', icon: Compass, href: '/explore' }, // Updated href
+  { title: 'Dashboard', icon: Home, href: '/' },
+  { title: 'My Trips', icon: Plane, href: '/my-trips' }, // Updated href to /my-trips
+  { title: 'Explore', icon: Compass, href: '/explore' },
   { title: 'Notifications', icon: Bell, href: '#' }, // Placeholder
   { title: 'Settings', icon: Settings, href: '#' }, // Placeholder
 ];
