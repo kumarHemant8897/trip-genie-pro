@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { PageHeader } from '@/components/PageHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { MapPin, DollarSign, Mountain, Waves, Forest } from 'lucide-react'; // Added more specific icons
+import { MapPin, DollarSign, Mountain, Waves, Compass, TreePine } from 'lucide-react'; // Updated imports: Added Compass, replaced Forest with TreePine
 
 // Define the structure for a recommendation
 interface ExploreRecommendation {
@@ -51,7 +50,7 @@ const recommendations: ExploreRecommendation[] = [
     image: 'photo-1469474968028-56623f02e42e', // landscape photography of mountain hit by sun rays
     budget: 'Approx. $1500 - $2500',
     tags: ['Culture', 'History', 'Adventure'],
-    icon: Compass, // Re-using Compass as it was already imported
+    icon: Compass, // Correctly using imported Compass
   },
   {
     id: '4',
@@ -61,7 +60,7 @@ const recommendations: ExploreRecommendation[] = [
     image: 'photo-1509316975850-ff9c5deb0cd9', // photo of pine trees
     budget: 'Approx. $1000 - $1800',
     tags: ['Nature', 'Forest', 'Relaxation'],
-    icon: Forest,
+    icon: TreePine, // Replaced Forest with TreePine
   },
   {
     id: '5',
@@ -71,7 +70,7 @@ const recommendations: ExploreRecommendation[] = [
     image: 'photo-1433086966358-54859d0ed716', // gray concrete bridge and waterfalls
     budget: 'Approx. $1800 - $3000',
     tags: ['Nature', 'Adventure', 'Sightseeing'],
-    icon: Waves, // Using Waves again, could be a more generic nature icon
+    icon: Waves, 
   },
    {
     id: '6',
@@ -81,7 +80,7 @@ const recommendations: ExploreRecommendation[] = [
     image: 'photo-1472396961693-142e6e269027', // two brown deer beside trees and mountain
     budget: 'Approx. $4000 - $7000',
     tags: ['Adventure', 'Wildlife', 'Nature'],
-    icon: Compass,
+    icon: Compass, // Correctly using imported Compass
   }
 ];
 
@@ -168,4 +167,3 @@ const ExplorePage = () => {
 };
 
 export default ExplorePage;
-
