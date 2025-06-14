@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AuthForm from '@/components/AuthForm';
@@ -24,6 +23,17 @@ const Index = () => {
   const handleCreateTrip = async (formData: TripFormData) => {
     if (!user) return;
 
+    // Check for required dates
+    if (!formData.startDate || !formData.endDate) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide both a Start Date and an End Date for your trip.",
+        variant: "destructive",
+      });
+      setCurrentView('create'); // Stay on create form or switch back if somehow on another view
+      return;
+    }
+
     setIsGenerating(true);
     setCurrentView('generating');
 
@@ -36,8 +46,8 @@ const Index = () => {
         user_id: user.id,
         title: formData.title,
         destination: formData.destination,
-        start_date: formData.startDate?.toISOString().split('T')[0],
-        end_date: formData.endDate?.toISOString().split('T')[0],
+        start_date: formData.startDate.toISOString().split('T')[0], // Now we know startDate is defined
+        end_date: formData.endDate.toISOString().split('T')[0],     // Now we know endDate is defined
         budget: formData.budget ? parseFloat(formData.budget) : null,
         traveler_type: formData.travelerType,
         interests: formData.interests,
@@ -64,9 +74,10 @@ const Index = () => {
         description: "Your personalized itinerary has been created!",
       });
     } catch (error: any) {
+      console.error("Error creating trip:", error); // Added console log for better debugging
       toast({
         title: "Error",
-        description: "Failed to generate itinerary. Please try again.",
+        description: `Failed to generate itinerary. ${error.message || 'Please try again.'}`,
         variant: "destructive",
       });
       setCurrentView('create');
