@@ -61,12 +61,22 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+        'sky-blue': {
+          DEFAULT: 'hsl(var(--sky-blue))',
+          foreground: 'hsl(var(--sky-blue-foreground))',
+        },
+        coral: {
+          DEFAULT: 'hsl(var(--coral))',
+          foreground: 'hsl(var(--coral-foreground))',
+        },
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+        'xl': 'calc(var(--radius) + 4px)', // Added for more rounded options
+        '2xl': 'calc(var(--radius) + 8px)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -89,7 +99,11 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+			},
+      boxShadow: {
+        'soft-light': '0 4px 12px rgba(0, 0, 0, 0.08)',
+        'soft-medium': '0 8px 16px rgba(0, 0, 0, 0.1)',
+      }
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

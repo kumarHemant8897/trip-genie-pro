@@ -8,9 +8,15 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { generateItinerary, TripFormData } from '@/services/openaiService';
-import { LogOut, ArrowLeft } from 'lucide-react';
+import { LogOut, ArrowLeft, Menu } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+
+// New imports for sidebar and header components
+import { SidebarProvider, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { AppSidebar } from '@/components/AppSidebar';
+import { UserProfileDropdown } from '@/components/UserProfileDropdown';
+import { NotificationBell } from '@/components/NotificationBell';
 
 type ViewState = 'dashboard' | 'create' | 'view' | 'generating';
 
@@ -164,6 +170,32 @@ const Index = () => {
     }
   };
 
+  const PageHeader = () => {
+    const { toggleSidebar } = useSidebar();
+    return (
+      <div className="bg-white border-b px-4 sm:px-6 py-3 sticky top-0 z-40 shadow-sm">
+        <div className="max-w-full mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={toggleSidebar} className="md:hidden hover:bg-sky-blue-DEFAULT/10"> {/* Sidebar trigger for mobile */}
+              <Menu className="w-6 h-6 text-gray-600" />
+            </Button>
+             <SidebarTrigger className="hidden md:flex hover:bg-sky-blue-DEFAULT/10" /> {/* Sidebar trigger for desktop */}
+            <div className="flex items-center gap-2 ml-2">
+              <div className="w-8 h-8 bg-sky-blue-DEFAULT rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-xl">✈️</span>
+              </div>
+              <span className="text-xl font-semibold text-primary hidden sm:inline">Smart Travel Planner</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <NotificationBell />
+            <UserProfileDropdown userEmail={user.email} onSignOut={signOut} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -183,13 +215,13 @@ const Index = () => {
     switch (currentView) {
       case 'create':
         return (
-          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+          <div className="min-h-screen bg-gradient-to-br from-sky-blue-DEFAULT/20 to-coral-DEFAULT/10 p-6">
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center gap-4 mb-6">
                 <Button 
                   variant="outline" 
                   onClick={handleBackToDashboard}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 bg-white hover:bg-slate-50"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back to Dashboard
@@ -205,16 +237,16 @@ const Index = () => {
 
       case 'generating':
         return (
-          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-            <div className="text-center max-w-md mx-auto p-6">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-6"></div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Creating Your Perfect Itinerary</h2>
-              <p className="text-gray-600 mb-6">Our AI is analyzing your preferences and crafting a personalized travel experience...</p>
+          <div className="min-h-screen bg-gradient-to-br from-sky-blue-DEFAULT/30 to-coral-DEFAULT/20 flex items-center justify-center">
+            <div className="text-center max-w-md mx-auto p-6 bg-white rounded-xl shadow-soft-medium">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-sky-blue-DEFAULT mx-auto mb-6"></div>
+              <h2 className="text-2xl font-bold text-primary mb-2">Crafting Your Adventure...</h2>
+              <p className="text-gray-600 mb-6">Our AI is whipping up a magical journey just for you!</p>
               <div className="space-y-2 text-sm text-gray-500">
-                <p>✓ Analyzing destination</p>
-                <p>✓ Finding best attractions</p>
-                <p>✓ Planning optimal routes</p>
-                <p className="animate-pulse">⏳ Generating itinerary...</p>
+                <p>✓ Analyzing destination vibes</p>
+                <p>✓ Finding hidden gems</p>
+                <p>✓ Plotting the perfect course</p>
+                <p className="animate-pulse text-coral-DEFAULT font-medium">✨ Generating itinerary...</p>
               </div>
             </div>
           </div>
@@ -222,13 +254,13 @@ const Index = () => {
 
       case 'view':
         return (
-          <div className="min-h-screen bg-gray-50 p-6">
+          <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
             <div className="max-w-6xl mx-auto">
               <div className="flex items-center gap-4 mb-6">
                 <Button 
                   variant="outline" 
                   onClick={handleBackToDashboard}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 bg-white hover:bg-slate-50"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Back to Dashboard
@@ -238,7 +270,7 @@ const Index = () => {
                 <ItineraryDisplay
                   ref={itineraryContentRef}
                   itinerary={generatedItinerary}
-                  onEdit={() => setCurrentView('create')}
+                  onEdit={() => setCurrentView('create')} // Consider an edit view later
                   onShare={() => toast({ title: "Share feature coming soon!" })}
                   onDownload={handleDownloadPdf}
                 />
@@ -247,32 +279,21 @@ const Index = () => {
           </div>
         );
 
-      default:
+      default: // Dashboard view
         return (
-          <div className="min-h-screen bg-gray-50">
-            <div className="bg-white border-b px-6 py-4">
-              <div className="max-w-6xl mx-auto flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">✈️</span>
-                  </div>
-                  <span className="text-xl font-bold text-gray-900">Smart Travel Planner</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-600">Welcome, {user.email}</span>
-                  <Button variant="outline" onClick={signOut}>
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Sign Out
-                  </Button>
-                </div>
-              </div>
+          <SidebarProvider defaultOpen={true}> {/* SidebarProvider wraps dashboard view */}
+            <div className="flex min-h-screen w-full bg-gray-50">
+              <AppSidebar onSignOut={signOut} userEmail={user.email} />
+              <main className="flex-1 flex flex-col overflow-y-auto">
+                <PageHeader />
+                <TripDashboard 
+                  onCreateNew={() => setCurrentView('create')}
+                  onViewTrip={handleViewTrip}
+                  onEditTrip={handleEditTrip} // This could lead to an edit form/view
+                />
+              </main>
             </div>
-            <TripDashboard 
-              onCreateNew={() => setCurrentView('create')}
-              onViewTrip={handleViewTrip}
-              onEditTrip={handleEditTrip}
-            />
-          </div>
+          </SidebarProvider>
         );
     }
   };
