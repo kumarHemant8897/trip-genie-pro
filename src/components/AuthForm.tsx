@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -82,10 +81,13 @@ const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center"
+      style={{ backgroundImage: "url('/lovable-uploads/f1802416-3efb-4730-af24-07191f127e4d.png')" }}
+    >
+      <Card className="w-full max-w-md bg-white/90 backdrop-blur-sm">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+          <div className="mx-auto mb-4 w-12 h-12 bg-sky-blue-DEFAULT rounded-full flex items-center justify-center">
             <Plane className="w-6 h-6 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold text-gray-900">Smart Travel Planner</CardTitle>
@@ -101,11 +103,11 @@ const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="signin-email">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="email"
+                      id="signin-email"
                       type="email"
                       placeholder="Enter your email"
                       className="pl-10"
@@ -116,11 +118,11 @@ const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="signin-password">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="password"
+                      id="signin-password"
                       type="password"
                       placeholder="Enter your password"
                       className="pl-10"
@@ -130,7 +132,7 @@ const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full bg-sky-blue-DEFAULT hover:bg-sky-blue-DEFAULT/90 text-white" disabled={isLoading}>
                   {isLoading ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
@@ -139,11 +141,11 @@ const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="signup-fullName">Full Name</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="fullName"
+                      id="signup-fullName"
                       type="text"
                       placeholder="Enter your full name"
                       className="pl-10"
@@ -154,11 +156,11 @@ const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="signup-email">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="email"
+                      id="signup-email"
                       type="email"
                       placeholder="Enter your email"
                       className="pl-10"
@@ -169,11 +171,11 @@ const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="signup-password">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
-                      id="password"
+                      id="signup-password"
                       type="password"
                       placeholder="Create a password"
                       className="pl-10"
@@ -183,7 +185,7 @@ const AuthForm = ({ onAuthSuccess }: AuthFormProps) => {
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full bg-sky-blue-DEFAULT hover:bg-sky-blue-DEFAULT/90 text-white" disabled={isLoading}>
                   {isLoading ? "Creating account..." : "Create Account"}
                 </Button>
               </form>
