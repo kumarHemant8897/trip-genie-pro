@@ -22,7 +22,12 @@ export const TripList = ({ trips, onCreateNew, onViewTrip, onEditTrip, onDeleteT
           <PlaneTakeoff className="w-24 h-24 text-sky-blue-DEFAULT mx-auto mb-6 opacity-70" />
           <h3 className="text-2xl font-semibold text-gray-800 mb-2">No Trips Yet, Adventurer?</h3>
           <p className="text-gray-600 mb-8 max-w-md mx-auto">Your next journey awaits! Click below to start planning something amazing.</p>
-          <Button onClick={onCreateNew} size="lg" className="bg-coral-DEFAULT hover:bg-coral-DEFAULT/90 text-white rounded-xl shadow-lg hover:shadow-xl transition-all">
+          <Button 
+            onClick={onCreateNew} 
+            size="lg" 
+            variant="destructive" 
+            className="rounded-xl shadow-lg hover:shadow-xl transition-all"
+          >
             <Plus className="w-5 h-5 mr-2" />
             Plan Your First Trip
           </Button>
@@ -45,3 +50,4 @@ export const TripList = ({ trips, onCreateNew, onViewTrip, onEditTrip, onDeleteT
     </div>
   );
 };
+
