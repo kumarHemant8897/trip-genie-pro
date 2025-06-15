@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -87,8 +86,15 @@ export const Chatbot = () => {
         <DrawerHeader>
           <DrawerTitle className="text-center">AI Assistant</DrawerTitle>
         </DrawerHeader>
-        <ScrollArea className="flex-grow p-4">
-          <div className="space-y-4">
+        <ScrollArea
+          className="flex-grow p-4 bg-cover bg-center relative"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1500&q=80')",
+          }}
+        >
+          <div className="absolute inset-0 bg-black/30" />
+          <div className="space-y-4 relative z-10">
             {messages.map((message, index) => (
               <div
                 key={index}
