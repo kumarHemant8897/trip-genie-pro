@@ -52,37 +52,32 @@ export const Chatbot = () => {
     try {
       const currentMessages = [...messages, userMessage];
       console.log('Sending messages to AI:', currentMessages);
-      
+
       const { data, error } = await supabase.functions.invoke('ai-chat-support', {
         body: { messages: currentMessages },
       });
 
-      if (error) {
-        console.error("Error invoking Supabase function:", error);
-        throw error;
+      if (error || !data) {
+        const errorMsg = error?.message || (data && data.error) || "Unknown error";
+        throw new Error(errorMsg);
       }
-      
-      console.log('Received response from AI:', data);
-      
-      if (!data || !data.message) {
-        throw new Error("Invalid response format from AI service");
-      }
-      
-      const assistantMessage = data.message;
-      setMessages((prev) => [...prev, assistantMessage]);
 
+      if (!data.message || !data.message.content) {
+        throw new Error("AI service did not return a response.");
+      }
+
+      const assistantMessage = {
+        role: 'assistant',
+        content: data.message.content,
+      };
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (error: any) {
       console.error("Error in handleSubmit:", error);
-      
-      const errorMessage = error.message || 'Unknown error occurred';
-      
       toast({
         title: 'Connection Error',
-        description: `Unable to connect to AI service: ${errorMessage}`,
+        description: `Unable to connect to AI service: ${error.message || error}`,
         variant: 'destructive',
       });
-      
-      // Add a fallback message
       setMessages(prev => [...prev, {
         role: 'assistant', 
         content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment."
@@ -115,39 +110,40 @@ export const Chatbot = () => {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex gap-3 items-start ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}
+                className="flex gap-3 items-start w-full"
               >
-                {message.role === 'assistant' && (
-                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
-                    <Bot className="w-5 h-5 text-blue-600" />
-                  </div>
-                )}
-                <div
-                  className={`max-w-[75%] md:max-w-[60%] p-4 rounded-2xl shadow-sm bg-white border border-gray-200 text-gray-800 ${
-                    message.role === 'user'
-                      ? 'rounded-br-md'
-                      : 'rounded-bl-md'
-                  }`}
+                <div className={`${message.role === 'user' 
+                  ? "ml-auto flex flex-row-reverse" 
+                  : ""} w-full flex items-end`}
                 >
-                  <div className="whitespace-pre-wrap leading-relaxed">
-                    {message.content}
+                  {/* Avatar */}
+                  <div className={`w-10 h-10 flex items-center justify-center flex-shrink-0 mt-1 rounded-full 
+                    ${message.role === 'user' ? 'bg-blue-600' : 'bg-blue-100'}`}>
+                    {message.role === 'user'
+                      ? <User className="w-5 h-5 text-white" />
+                      : <Bot className="w-5 h-5 text-blue-600" />
+                    }
+                  </div>
+                  {/* Message Bubble */}
+                  <div
+                    className={`max-w-[75%] md:max-w-[60%] p-4 my-1 rounded-2xl shadow-sm bg-white border border-gray-200 text-gray-800 
+                            flex-1 
+                            ${message.role === 'user'
+                              ? 'rounded-br-md ml-3'
+                              : 'rounded-bl-md mr-3'
+                            }`}
+                  >
+                    <div className="whitespace-pre-wrap break-words leading-relaxed">{message.content}</div>
                   </div>
                 </div>
-                {message.role === 'user' && (
-                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0 mt-1">
-                    <User className="w-5 h-5 text-white" />
-                  </div>
-                )}
               </div>
             ))}
             {isLoading && (
-              <div className="flex gap-3 justify-start items-start">
+              <div className="flex gap-3 items-start">
                 <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
                   <Bot className="w-5 h-5 text-blue-600" />
                 </div>
-                <div className="max-w-[75%] md:max-w-[60%] p-4 rounded-2xl bg-white border border-gray-200 rounded-bl-md">
+                <div className="max-w-[75%] md:max-w-[60%] p-4 rounded-2xl bg-white border border-gray-200 flex-1 rounded-bl-md">
                   <div className="flex items-center space-x-2">
                     <span className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                     <span className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
@@ -168,11 +164,13 @@ export const Chatbot = () => {
               className="flex-1 bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               disabled={isLoading}
               autoComplete="off"
+              data-testid="chatbot-input"
             />
             <Button 
               type="submit" 
               disabled={isLoading || !input.trim()}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 flex items-center justify-center"
+              data-testid="chatbot-send"
             >
               <Send className="w-4 h-4" />
             </Button>

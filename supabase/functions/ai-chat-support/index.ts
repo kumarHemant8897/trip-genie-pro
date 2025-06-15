@@ -11,10 +11,10 @@ const corsHeaders = {
 
 serve(async (req) => {
   console.log(`[ai-chat-support] Received ${req.method} request.`);
-  
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response('ok', { headers: corsHeaders });
   }
 
   try {
@@ -23,23 +23,23 @@ serve(async (req) => {
       throw new Error("Missing OPENAI_API_KEY environment variable.")
     }
 
-    const { messages } = await req.json()
-    
+    const { messages } = await req.json();
+
     if (!messages || !Array.isArray(messages)) {
       throw new Error("Invalid messages format")
     }
 
     const completionConfig = {
-        model: "gpt-4.1-2025-04-14",
-        messages: [
-            {
-                role: "system",
-                content: "You are a friendly and helpful support assistant for a trip planning application. You can help users with questions about the app, travel tips, or destination ideas. Keep your answers concise and helpful."
-            },
-            ...messages,
-        ],
-        temperature: 0.7,
-        max_tokens: 1024,
+      model: "gpt-4.1-2025-04-14", // Use latest
+      messages: [
+        {
+          role: "system",
+          content: "You are a friendly and helpful support assistant for a trip planning application. You can help users with questions about the app, travel tips, or destination ideas. Keep your answers concise and helpful."
+        },
+        ...messages,
+      ],
+      temperature: 0.7,
+      max_tokens: 1024,
     };
 
     console.log('[ai-chat-support] Making request to OpenAI with model:', completionConfig.model);
@@ -54,35 +54,34 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[ai-chat-support] OpenAI API error response:', errorText);
-        let errorBody;
-        try {
-          errorBody = JSON.parse(errorText);
-        } catch {
-          errorBody = { error: { message: errorText } };
-        }
-        throw new Error(`OpenAI API error: ${errorBody.error?.message || 'Unknown error'}`);
+      const errorText = await response.text();
+      console.error('[ai-chat-support] OpenAI API error response:', errorText);
+      let errorBody;
+      try {
+        errorBody = JSON.parse(errorText);
+      } catch {
+        errorBody = { error: { message: errorText } };
+      }
+      throw new Error(`OpenAI API error: ${errorBody.error?.message || 'Unknown error'}`);
     }
 
-    const data = await response.json()
-    
+    const data = await response.json();
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
       throw new Error("Invalid response format from OpenAI")
     }
-    
+
     const aiResponse = data.choices[0].message;
 
     console.log('[ai-chat-support] Successfully received response from OpenAI');
 
     return new Response(JSON.stringify({ message: aiResponse }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    });
   } catch (error) {
     console.error(`[ai-chat-support] Error: ${error.message}`);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    });
   }
-})
+});
