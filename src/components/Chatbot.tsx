@@ -90,7 +90,7 @@ export const Chatbot = () => {
           className="flex-grow p-4 bg-cover bg-center relative"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&w=1500&q=80')",
+              "url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1500&q=80')",
           }}
         >
           <div className="absolute inset-0 bg-black/30" />
