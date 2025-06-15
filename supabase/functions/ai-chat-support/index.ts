@@ -1,4 +1,5 @@
 
+
 import 'https://deno.land/x/xhr@0.1.0/mod.ts'
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
@@ -25,7 +26,7 @@ serve(async (req) => {
     const { messages } = await req.json()
 
     const completionConfig = {
-        model: "o4-mini-2025-04-16",
+        model: "gpt-4o-mini",
         messages: [
             {
                 role: "system",
@@ -36,6 +37,8 @@ serve(async (req) => {
         temperature: 0.7,
         max_tokens: 1024,
     };
+
+    console.log('[ai-chat-support] Making request to OpenAI with model:', completionConfig.model);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -48,11 +51,14 @@ serve(async (req) => {
 
     if (!response.ok) {
         const errorBody = await response.json();
-        throw new Error(`OpenAI API error: ${errorBody.error.message}`);
+        console.error('[ai-chat-support] OpenAI API error:', errorBody);
+        throw new Error(`OpenAI API error: ${errorBody.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json()
     const aiResponse = data.choices[0].message;
+
+    console.log('[ai-chat-support] Successfully received response from OpenAI');
 
     return new Response(JSON.stringify({ message: aiResponse }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -65,3 +71,4 @@ serve(async (req) => {
     })
   }
 })
+

@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -10,7 +11,7 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot } from 'lucide-react';
+import { Bot, User } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -50,6 +51,8 @@ export const Chatbot = () => {
 
     try {
       const currentMessages = [...messages, userMessage];
+      console.log('Sending messages to AI:', currentMessages);
+      
       const { data, error } = await supabase.functions.invoke('ai-chat-support', {
         body: { messages: currentMessages },
       });
@@ -59,6 +62,7 @@ export const Chatbot = () => {
         throw error;
       }
       
+      console.log('Received response from AI:', data);
       const assistantMessage = data.message;
       setMessages((prev) => [...prev, assistantMessage]);
 
@@ -86,70 +90,77 @@ export const Chatbot = () => {
           <Bot className="w-8 h-8" />
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="h-[80vh] flex flex-col">
-        <DrawerHeader>
-          <DrawerTitle className="text-center">AI Assistant</DrawerTitle>
+      <DrawerContent className="h-[85vh] flex flex-col max-w-4xl mx-auto">
+        <DrawerHeader className="border-b bg-white">
+          <DrawerTitle className="text-center flex items-center justify-center gap-2">
+            <Bot className="w-6 h-6 text-blue-600" />
+            AI Travel Assistant
+          </DrawerTitle>
         </DrawerHeader>
-        <ScrollArea
-          className="flex-grow p-4 bg-cover bg-center relative"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1500&q=80')",
-          }}
-        >
-          <div className="absolute inset-0 bg-black/30" />
-          <div className="space-y-4 relative z-10">
+        <ScrollArea className="flex-grow p-4 bg-gray-50">
+          <div className="space-y-4 max-w-3xl mx-auto">
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex gap-2 items-end ${
+                className={`flex gap-3 items-start ${
                   message.role === 'user' ? 'justify-end' : 'justify-start'
                 }`}
               >
                 {message.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <Bot className="w-5 h-5 text-blue-800" />
+                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                    <Bot className="w-5 h-5 text-blue-600" />
                   </div>
                 )}
                 <div
-                  className={`max-w-xs md:max-w-md lg:max-w-lg p-3 rounded-xl shadow-sm ${
+                  className={`max-w-[75%] md:max-w-[60%] p-4 rounded-2xl shadow-sm ${
                     message.role === 'user'
-                      ? 'bg-coral-DEFAULT text-white rounded-br-none'
-                      : 'bg-slate-100 text-gray-800 rounded-bl-none'
+                      ? 'bg-white border border-gray-200 text-gray-800 rounded-br-md'
+                      : 'bg-white border border-gray-200 text-gray-800 rounded-bl-md'
                   }`}
                 >
-                  {message.content}
+                  <div className="whitespace-pre-wrap leading-relaxed">
+                    {message.content}
+                  </div>
                 </div>
+                {message.role === 'user' && (
+                  <div className="w-10 h-10 rounded-full bg-coral-DEFAULT flex items-center justify-center flex-shrink-0 mt-1">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
+                )}
               </div>
             ))}
             {isLoading && (
-              <div className="flex gap-2 justify-start items-end">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-5 h-5 text-blue-800" />
+              <div className="flex gap-3 justify-start items-start">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                  <Bot className="w-5 h-5 text-blue-600" />
                 </div>
-                <div className="max-w-xs p-3 rounded-xl bg-slate-100 text-gray-800 rounded-bl-none">
-                    <div className="flex items-center space-x-1">
-                        <span className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                        <span className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                        <span className="h-2 w-2 bg-blue-500 rounded-full animate-bounce"></span>
-                    </div>
+                <div className="max-w-[75%] md:max-w-[60%] p-4 rounded-2xl bg-white border border-gray-200 rounded-bl-md">
+                  <div className="flex items-center space-x-2">
+                    <span className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                    <span className="h-2 w-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                    <span className="h-2 w-2 bg-blue-500 rounded-full animate-bounce"></span>
+                  </div>
                 </div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
-        <DrawerFooter className="mt-auto bg-background border-t">
-          <form onSubmit={handleSubmit} className="flex items-center gap-2">
+        <DrawerFooter className="bg-white border-t">
+          <form onSubmit={handleSubmit} className="flex items-center gap-3 max-w-3xl mx-auto w-full">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask me anything..."
-              className="flex-1"
+              placeholder="Ask me anything about your travel plans..."
+              className="flex-1 bg-white border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               disabled={isLoading}
               autoComplete="off"
             />
-            <Button type="submit" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              disabled={isLoading || !input.trim()}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6"
+            >
               Send
             </Button>
           </form>
@@ -158,3 +169,4 @@ export const Chatbot = () => {
     </Drawer>
   );
 };
+
