@@ -188,8 +188,17 @@ const Index = () => {
     switch (currentView) {
       case 'create':
         return (
-          <div className="min-h-screen bg-gradient-to-br from-sky-blue-DEFAULT/20 to-coral-DEFAULT/10 p-6">
-            <div className="max-w-4xl mx-auto">
+          // Set a nice background image, use overlay for readability
+          <div
+            className="min-h-screen bg-cover bg-center flex items-center justify-center relative"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1500&q=80')",
+            }}
+          >
+            {/* Overlay for readability */}
+            <div className="absolute inset-0 bg-black/30 pointer-events-none" />
+            <div className="relative z-10 w-full p-6 max-w-4xl mx-auto">
               <div className="flex items-center gap-4 mb-6">
                 <Button 
                   variant="outline" 
