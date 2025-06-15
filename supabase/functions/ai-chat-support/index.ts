@@ -1,5 +1,4 @@
 
-
 import 'https://deno.land/x/xhr@0.1.0/mod.ts'
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 
@@ -12,6 +11,7 @@ const corsHeaders = {
 
 serve(async (req) => {
   console.log(`[ai-chat-support] Received ${req.method} request.`);
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -24,9 +24,13 @@ serve(async (req) => {
     }
 
     const { messages } = await req.json()
+    
+    if (!messages || !Array.isArray(messages)) {
+      throw new Error("Invalid messages format")
+    }
 
     const completionConfig = {
-        model: "gpt-4o-mini",
+        model: "gpt-4.1-2025-04-14",
         messages: [
             {
                 role: "system",
@@ -50,12 +54,23 @@ serve(async (req) => {
     });
 
     if (!response.ok) {
-        const errorBody = await response.json();
-        console.error('[ai-chat-support] OpenAI API error:', errorBody);
+        const errorText = await response.text();
+        console.error('[ai-chat-support] OpenAI API error response:', errorText);
+        let errorBody;
+        try {
+          errorBody = JSON.parse(errorText);
+        } catch {
+          errorBody = { error: { message: errorText } };
+        }
         throw new Error(`OpenAI API error: ${errorBody.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json()
+    
+    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+      throw new Error("Invalid response format from OpenAI")
+    }
+    
     const aiResponse = data.choices[0].message;
 
     console.log('[ai-chat-support] Successfully received response from OpenAI');
@@ -71,4 +86,3 @@ serve(async (req) => {
     })
   }
 })
-

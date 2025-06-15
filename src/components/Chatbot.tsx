@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Bot, User } from 'lucide-react';
+import { Bot, User, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -44,7 +44,7 @@ export const Chatbot = () => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: 'user', content: input };
+    const userMessage: Message = { role: 'user', content: input.trim() };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
@@ -63,17 +63,30 @@ export const Chatbot = () => {
       }
       
       console.log('Received response from AI:', data);
+      
+      if (!data || !data.message) {
+        throw new Error("Invalid response format from AI service");
+      }
+      
       const assistantMessage = data.message;
       setMessages((prev) => [...prev, assistantMessage]);
 
     } catch (error: any) {
       console.error("Error in handleSubmit:", error);
+      
+      const errorMessage = error.message || 'Unknown error occurred';
+      
       toast({
-        title: 'Error',
-        description: `Failed to get response from AI. ${error.message || 'Please try again.'}`,
+        title: 'Connection Error',
+        description: `Unable to connect to AI service: ${errorMessage}`,
         variant: 'destructive',
       });
-      setMessages(prev => [...prev, {role: 'assistant', content: "Sorry, I'm having trouble connecting. Please try again later."}])
+      
+      // Add a fallback message
+      setMessages(prev => [...prev, {
+        role: 'assistant', 
+        content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment."
+      }]);
     } finally {
       setIsLoading(false);
     }
@@ -112,10 +125,10 @@ export const Chatbot = () => {
                   </div>
                 )}
                 <div
-                  className={`max-w-[75%] md:max-w-[60%] p-4 rounded-2xl shadow-sm ${
+                  className={`max-w-[75%] md:max-w-[60%] p-4 rounded-2xl shadow-sm bg-white border border-gray-200 text-gray-800 ${
                     message.role === 'user'
-                      ? 'bg-white border border-gray-200 text-gray-800 rounded-br-md'
-                      : 'bg-white border border-gray-200 text-gray-800 rounded-bl-md'
+                      ? 'rounded-br-md'
+                      : 'rounded-bl-md'
                   }`}
                 >
                   <div className="whitespace-pre-wrap leading-relaxed">
@@ -123,7 +136,7 @@ export const Chatbot = () => {
                   </div>
                 </div>
                 {message.role === 'user' && (
-                  <div className="w-10 h-10 rounded-full bg-coral-DEFAULT flex items-center justify-center flex-shrink-0 mt-1">
+                  <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0 mt-1">
                     <User className="w-5 h-5 text-white" />
                   </div>
                 )}
@@ -161,7 +174,7 @@ export const Chatbot = () => {
               disabled={isLoading || !input.trim()}
               className="bg-blue-600 hover:bg-blue-700 text-white px-6"
             >
-              Send
+              <Send className="w-4 h-4" />
             </Button>
           </form>
         </DrawerFooter>
@@ -169,4 +182,3 @@ export const Chatbot = () => {
     </Drawer>
   );
 };
-
