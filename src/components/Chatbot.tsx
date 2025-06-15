@@ -54,12 +54,16 @@ export const Chatbot = () => {
         body: { messages: currentMessages },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error invoking Supabase function:", error);
+        throw error;
+      }
       
       const assistantMessage = data.message;
       setMessages((prev) => [...prev, assistantMessage]);
 
     } catch (error: any) {
+      console.error("Error in handleSubmit:", error);
       toast({
         title: 'Error',
         description: `Failed to get response from AI. ${error.message || 'Please try again.'}`,

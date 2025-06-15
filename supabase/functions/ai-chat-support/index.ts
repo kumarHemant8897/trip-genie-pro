@@ -10,6 +10,7 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  console.log(`[ai-chat-support] Received ${req.method} request.`);
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -17,6 +18,7 @@ serve(async (req) => {
 
   try {
     if (!openAIApiKey) {
+      console.error('[ai-chat-support] Missing OPENAI_API_KEY environment variable.');
       throw new Error("Missing OPENAI_API_KEY environment variable.")
     }
 
@@ -56,6 +58,7 @@ serve(async (req) => {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (error) {
+    console.error(`[ai-chat-support] Error: ${error.message}`);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
