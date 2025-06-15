@@ -17,11 +17,17 @@ interface TripListProps {
 export const TripList = ({ trips, onCreateNew, onViewTrip, onEditTrip, onDeleteTrip }: TripListProps) => {
   if (trips.length === 0) {
     return (
-      <Card className="text-center py-16 bg-white rounded-2xl shadow-soft-medium border-dashed border-2 border-gray-300">
-        <CardContent className="flex flex-col items-center">
-          <PlaneTakeoff className="w-24 h-24 text-sky-blue-DEFAULT mx-auto mb-6 opacity-70" />
-          <h3 className="text-2xl font-semibold text-gray-800 mb-2">No Trips Yet, Adventurer?</h3>
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">Your next journey awaits! Click below to start planning something amazing.</p>
+      <Card className="text-center py-16 bg-white rounded-2xl shadow-soft-medium border-dashed border-2 border-gray-300 relative overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1500&q=80"
+          alt="Adventurous landscape"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        />
+        <div className="absolute inset-0 bg-black/50 z-0" />
+        <CardContent className="flex flex-col items-center relative z-10">
+          <PlaneTakeoff className="w-24 h-24 text-white mx-auto mb-6 opacity-90" />
+          <h3 className="text-2xl font-semibold text-white mb-2">No Trips Yet, Adventurer?</h3>
+          <p className="text-gray-200 mb-8 max-w-md mx-auto">Your next journey awaits! Click below to start planning something amazing.</p>
           <Button 
             onClick={onCreateNew} 
             size="lg" 
@@ -50,4 +56,3 @@ export const TripList = ({ trips, onCreateNew, onViewTrip, onEditTrip, onDeleteT
     </div>
   );
 };
-

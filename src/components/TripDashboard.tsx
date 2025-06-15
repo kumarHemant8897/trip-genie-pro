@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Trip } from '@/types/trip'; // Import Trip type
@@ -97,7 +96,7 @@ const TripDashboard = ({ onCreateNew, onViewTrip, onEditTrip }: TripDashboardPro
   }
 
   return (
-    <div className="flex-1 p-4 sm:p-6 lg:p-8 bg-gray-50 overflow-y-auto">
+    <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
       <TripDashboardHeader />
       
       <TripFilters 

@@ -264,15 +264,24 @@ const Index = () => {
       default: // Dashboard view
         return (
           <SidebarProvider defaultOpen={true}>
-            <div className="flex min-h-screen w-full bg-gray-50">
+            <div className="flex min-h-screen w-full">
               <AppSidebar onSignOut={signOut} userEmail={user.email} />
-              <main className="flex-1 flex flex-col overflow-y-auto">
-                <PageHeader />
-                <TripDashboard 
-                  onCreateNew={() => setCurrentView('create')}
-                  onViewTrip={handleViewTrip}
-                  onEditTrip={handleEditTrip}
-                />
+              <main
+                className="flex-1 flex flex-col overflow-y-auto relative bg-cover bg-center"
+                style={{
+                  backgroundImage:
+                    "url('https://images.unsplash.com/photo-1426604966848-d7adac402bff?auto=format&fit=crop&w=1500&q=80')",
+                }}
+              >
+                <div className="absolute inset-0 bg-white/70 dark:bg-black/70 z-0" />
+                <div className="relative z-10 flex flex-1 flex-col">
+                  <PageHeader />
+                  <TripDashboard 
+                    onCreateNew={() => setCurrentView('create')}
+                    onViewTrip={handleViewTrip}
+                    onEditTrip={handleEditTrip}
+                  />
+                </div>
               </main>
             </div>
           </SidebarProvider>
