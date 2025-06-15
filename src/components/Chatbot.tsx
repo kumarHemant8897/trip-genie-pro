@@ -66,7 +66,7 @@ export const Chatbot = () => {
         throw new Error("AI service did not return a response.");
       }
 
-      const assistantMessage = {
+      const assistantMessage: Message = {
         role: 'assistant',
         content: data.message.content,
       };
@@ -78,10 +78,13 @@ export const Chatbot = () => {
         description: `Unable to connect to AI service: ${error.message || error}`,
         variant: 'destructive',
       });
-      setMessages(prev => [...prev, {
-        role: 'assistant', 
-        content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment."
-      }]);
+      setMessages(prev => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
+        } as Message,
+      ]);
     } finally {
       setIsLoading(false);
     }
