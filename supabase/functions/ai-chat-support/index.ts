@@ -23,7 +23,7 @@ serve(async (req) => {
     const { messages } = await req.json()
 
     const completionConfig = {
-        model: "gpt-4o-mini",
+        model: "o4-mini-2025-04-16",
         messages: [
             {
                 role: "system",
