@@ -11,6 +11,7 @@ import { generateItinerary, TripFormData } from '@/services/openaiService';
 import { LogOut, ArrowLeft, Menu } from 'lucide-react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { Chatbot } from '@/components/Chatbot';
 
 // New imports for sidebar and header components
 import { SidebarProvider, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
@@ -289,7 +290,12 @@ const Index = () => {
     }
   };
 
-  return renderContent();
+  return (
+    <>
+      {renderContent()}
+      <Chatbot />
+    </>
+  );
 };
 
 export default Index;
