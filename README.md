@@ -8,7 +8,7 @@
 
 There are several ways of editing your application.
 
-**Use Lovable**
+****
 
 Simply visit the [Lovable Project](https://lovable.dev/projects/091cce14-6d77-449a-ab38-dde4925a8b88) and start prompting.
 
@@ -66,7 +66,7 @@ Simply open [Lovable](https://lovable.dev/projects/091cce14-6d77-449a-ab38-dde49
 
 ## Can I connect a custom domain to my Lovable project?
 
-Yes, you can!
+Yes, you can Hemant!
 
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
