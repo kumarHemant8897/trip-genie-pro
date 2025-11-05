@@ -1,6 +1,6 @@
 
 
-## Project info
+## Project info of hemant ai trip planner
 
 
 
