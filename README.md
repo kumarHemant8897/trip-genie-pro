@@ -1,6 +1,6 @@
 
 
-## Project info of hemant KUMAR ai trip planner
+## Project info of hemant KUMAR ai trip planner with AI features
 
 
 
